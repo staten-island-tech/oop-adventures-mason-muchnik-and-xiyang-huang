@@ -4,6 +4,6 @@ class Ogre():
         self.speed = speed
         self.inventory = inventory
 
-        hitpoints = 120
-        speed = 200
-        inventory = ["Starter Club"]
+        hitpoints: int = 120
+        speed: int =  200
+        inventory: str = ["Starter Club"]

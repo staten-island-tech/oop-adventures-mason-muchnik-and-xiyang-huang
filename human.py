@@ -4,6 +4,6 @@ class Human():
         self.speed = speed
         self.inventory = inventory
 
-        hitpoints = 100
-        speed = 250
-        inventory = ["Starter Sword"]
+        hitpoints: int = 100
+        speed: int =  250
+        inventory: str = ["Starter Sword"]

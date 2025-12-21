@@ -4,6 +4,6 @@ class Goblin():
         self.speed = speed
         self.inventory = inventory
 
-        hitpoints = 80
-        speed = 300
-        inventory = ["Starter Dagger"]
+        hitpoints: int = 80
+        speed: int =  300
+        inventory: str = ["Starter Dagger"]
