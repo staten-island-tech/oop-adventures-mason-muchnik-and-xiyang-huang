@@ -1,52 +1,35 @@
-# class Human():
-#     def __init__(self, hitpoints, speed, inventory):
-#         self.hitpoints = hitpoints
-#         self.speed = speed
-#         self.inventory = inventory
-
-#         hitpoints = 100
-#         speed = 250
-#         inventory = ["Starter Sword"]
-
-# class Goblin():
-#     def __init__(self, hitpoints, speed, inventory):
-#         self.hitpoints = hitpoints
-#         self.speed = speed
-#         self.inventory = inventory
-
-#         hitpoints = 80
-#         speed = 300
-#         inventory = ["Starter Dagger"]
-
-# class Ogre():
-#     def __init__(self, hitpoints, speed, inventory):
-#         self.hitpoints = hitpoints
-#         self.speed = speed
-#         self.inventory = inventory
-
-#         hitpoints = 120
-#         speed = 200
-#         inventory = ["Starter Club"]
-
-class Player():
-    def __init__(self, race, hitpoints, speed, inventory):
+class Player:
+    def __init__(self, race):
         self.race = race
-        #race
+        self.inventory = []
+
         if race == "Human":
-            hitpoints = 100
-            speed = 250
-            inventory.append("Starter Sword")
+            self.hitpoints = 100
+            self.speed = 250
+            self.inventory.append("Starter Sword")
+            
         elif race == "Goblin":
-            hitpoints = 80
-            speed = 300
-            inventory.append("Starter Dagger")
+            self.hitpoints = 80
+            self.speed = 300
+            self.inventory.append("Starter Dagger")
+
         elif race == "Ogre":
-            hitpoints = 120
-            speed = 200
-            inventory.append("Starter Club")
+            self.hitpoints = 120
+            self.speed = 200
+            self.inventory.append("Starter Club")
 
-        self.hitpoints = hitpoints
-        self.speed = speed
-        self.inventory = inventory
+#starts game
+#create gui to start game
+cc = input("Character Creation: \n1. Human \n2. Goblin\n3. Ogre\n\nWhat race do you want to be?").lower().strip()
 
-        inventory = []
+if cc == "human":
+    test = Player("Human")
+    print(test.race)
+elif cc == "goblin":
+    test = Player("Goblin")
+    print(test.race)
+elif cc == "ogre":
+    test = Player("Ogre")
+    print(f"Your race is: {test.race}")
+else:
+    print("That is not an option.")

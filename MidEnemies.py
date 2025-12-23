@@ -1,27 +1,20 @@
 class Troll():
-    def __init__(self, hitpoints, speed, xp, attacks):
-        self.hitpoints = hitpoints
-        self.speed = speed
-        self.xp = xp
-        self.attacks = attacks
-
-        hitpoints = 200
-        speed = 160
-        xp = 40
-        attacks = {
+    def __init__(self):
+        self.hitpoints = 200
+        self.speed = 160
+        self.xp = 40
+        self.attacks = {
             "Slam": 50,
         }
 
 class ElderTroll():
-    def __init__(self, hitpoints, speed, xp, attacks):
-        self.hitpoints = hitpoints
-        self.speed = speed
-        self.xp = xp
-        self.attacks = attacks
-
-        hitpoints = 300
-        speed = 180
-        xp = 60
-        attacks = {
+    def __init__(self):
+        self.hitpoints = 300
+        self.speed = 180
+        self.xp = 60
+        self.attacks = {
             "Slam": 80,
-        }        
+        }
+
+test = ElderTroll()
+print(test.hitpoints)
