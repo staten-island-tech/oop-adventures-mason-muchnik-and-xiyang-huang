@@ -31,10 +31,17 @@ class Player():
         return self.hitpoints
     
     def attack(self, enemy):
-        for i in john.inventory:
-            if i in Weapons["name"]:
-                a = Weapons[a]
-        enemy.hitpoints -= Weapons[a]["damage"]
+        for item in self.inventory:
+            for weapon in Weapons:
+                if weapon["name"] == item:
+                    damage = weapon["damage"]
+                    enemy.hitpoints -= damage
+                    print(f"{self.race} used {item} for {damage} damage!")
+                    return
+                
+    def show_hp(self):
+        print(f"you have {self.hitpoints} HP")
+
 
 class Skeleton():
     def __init__(self):
@@ -47,8 +54,9 @@ class Skeleton():
         }
 
     def respawn(self):
-        if self.hitpoints <= 0:
-            self.hitpoints = 10    
+        print(f"you have defeated skeleton")
+        self.hitpoints = 10
+
 
 Weapons = [
     {"name": "Starter Sword", "damage": 15},
@@ -65,6 +73,9 @@ Weapons = [
 skeleton = Skeleton()
 john = Player("Human")
 
-print(john.hitpoints)
+print("John HP:", john.hitpoints)
 john.take_damage(skeleton)
+john.show_hp()
 john.attack(skeleton)
+print(f"skeleton hp: {skeleton.hitpoints}")
+skeleton.respawn()
