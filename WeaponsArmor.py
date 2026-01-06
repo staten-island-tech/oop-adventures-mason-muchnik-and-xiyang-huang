@@ -1,3 +1,5 @@
+
+
 Weapons = [
     {"name": "Starter Sword", "damage": 15},
     {"name": "Wooden Sword", "damage": 25},
@@ -15,6 +17,3 @@ Armor = [
     {"name": "Chainmail Armor", "health": 10, "speed": 20},
     {"name": "Iron Armor", "health": 20, "speed": -20}
 ]
-
-for type in Weapons:
-    print(type)

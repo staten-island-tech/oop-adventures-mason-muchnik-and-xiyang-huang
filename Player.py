@@ -1,81 +1,65 @@
+import pygame
 import random
+from WeaponsArmor import Weapons
 
-class Player():
-    def __init__(self, race):
+class Player(pygame.sprite.Sprite):
+    def __init__(self, race, x, y):
+        super().__init__()
         self.race = race
-        self.inventory = []
-
-        if race == "Human":
-            self.hitpoints = 100
-            self.maxhp = 100
-            self.speed = 250
-            self.inventory.append("Starter Sword")
+        
+        # Try to load image, fallback to square
+        try:
+            self.image = pygame.image.load("human.png").convert_alpha()
+            self.image = pygame.transform.scale(self.image, (42, 42))
+        except:
+            self.image = pygame.Surface((40, 40))
+            self.image.fill((0, 200, 0))
             
-        elif race == "Goblin":
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.inventory = []
+        
+        # Stats based on your framework
+        if race in ("Human", "human", "1"):
+            self.hitpoints = 100
+            self.max_hp = 100
+            self.speed = 4
+            self.inventory.append("Starter Sword")
+        elif race in ("Goblin", "goblin", "2"):
             self.hitpoints = 80
-            self.maxhp = 80
-            self.speed = 300
+            self.max_hp = 80
+            self.speed = 6
             self.inventory.append("Starter Dagger")
-
-        elif race == "Ogre":
+        elif race in ("Ogre", "ogre", "3"):
             self.hitpoints = 120
-            self.maxhp = 120
-            self.speed = 200
+            self.max_hp = 120
+            self.speed = 2
             self.inventory.append("Starter Club")
+
+    def move(self, dx, dy, walls):
+        # Move horizontally
+        if dx != 0:
+            self.rect.x += dx * self.speed
+            # Check for wall collisions
+            if pygame.sprite.spritecollideany(self, walls):
+                self.rect.x -= dx * self.speed
+
+        # Move vertically
+        if dy != 0:
+            self.rect.y += dy * self.speed
+            # Check for wall collisions
+            if pygame.sprite.spritecollideany(self, walls):
+                self.rect.y -= dy * self.speed
 
     def take_damage(self, enemy):
         attack = random.choice(list(enemy.attacks.keys()))
         damage = enemy.attacks[attack]
-        self.hitpoints -= damage
-        print(f"Skeleton used {attack} for {damage} damage!")
-        return self.hitpoints
+        self.hitpoints = max(0, self.hitpoints - damage)
+        return damage
     
     def attack(self, enemy):
         for item in self.inventory:
             for weapon in Weapons:
                 if weapon["name"] == item:
                     damage = weapon["damage"]
-                    enemy.hitpoints -= damage
-                    print(f"{self.race} used {item} for {damage} damage!")
-                    return
-                
-    def show_hp(self):
-        print(f"you have {self.hitpoints} HP")
-
-
-class Skeleton():
-    def __init__(self):
-        self.hitpoints = 10
-        self.speed = 180
-        self.xp = 5
-        self.attacks = {
-            "Punch": 5,
-            "Bone Throw": 10
-        }
-
-    def respawn(self):
-        print(f"you have defeated skeleton")
-        self.hitpoints = 10
-
-
-Weapons = [
-    {"name": "Starter Sword", "damage": 15},
-    {"name": "Wooden Sword", "damage": 25},
-    {"name": "Iron Sword", "damage": 40},
-    {"name": "Starter Dagger", "damage": 10},
-    {"name": "Stone Dagger", "damage": 15},
-    {"name": "Short Sword", "damage": 25},
-    {"name": "Starter Club", "damage": 30},
-    {"name": "Spiked Club", "damage": 40},
-    {"name": "Iron Axe", "damage": 60}
-]
-
-skeleton = Skeleton()
-john = Player("Human")
-
-print("John HP:", john.hitpoints)
-john.take_damage(skeleton)
-john.show_hp()
-john.attack(skeleton)
-print(f"skeleton hp: {skeleton.hitpoints}")
-skeleton.respawn()
+                    enemy.hitpoints = max(0, enemy.hitpoints - damage)
+                    return damage

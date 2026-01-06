@@ -1,178 +1,84 @@
-import random
+import pygame
+import sys
+from Player import Player
+from enemies import Skeleton, Zombie
 
-#game enemies
-class Skeleton():
-    def __init__(self):
-        self.name = "Skeleton"
-        self.hitpoints = 10
-        self.speed = 180
-        self.xp = 5
-        self.attacks = {
-            "Punch": 5,
-            "Bone Throw": 10
-        }
+pygame.init()
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
+font = pygame.font.SysFont("Arial", 18)
 
-    def respawn(self):
-        print("You have defeated the Skeleton!")
-        self.hitpoints = 10
-
-
-class Zombie():
-    def __init__(self):
-        self.name = "Zombie"
-        self.hitpoints = 30
-        self.speed = 160
-        self.xp = 5
-        self.attacks = {
-            "Punch": 10,
-            "Bite": 10
-        }
-
-    def respawn(self):
-        print("You have defeated the Zombie!")
-        self.hitpoints = 30
-
-
-class Wolves():
-    def __init__(self):
-        self.name = "Wolves"
-        self.hitpoints = 25
-        self.speed = 300
-        self.xp = 10
-        self.attacks = {
-            "Bite": 15,
-        }
-
-    def respawn(self):
-        print("You have defeated the Wolves!")
-        self.hitpoints = 25
-
-
-class BabyTroll():
-    def __init__(self):
-        self.name = "Baby Troll"
-        self.hitpoints = 50
-        self.speed = 160
-        self.xp = 20
-        self.attacks = {
-            "Punch": 30,
-        }
-
-    def respawn(self):
-        print("You have defeated the Baby Troll!")
-        self.hitpoints = 50
-
-
-class Troll():
-    def __init__(self):
-        self.name = "Troll"
-        self.hitpoints = 150
-        self.speed = 160
-        self.xp = 40
-        self.attacks = {
-            "Slam": 50,
-        }
-
-    def respawn(self):
-        print("You have defeated the Troll!")
-        self.hitpoints = 150
-
-
-class ElderTroll():
-    def __init__(self):
-        self.name = "Elder Troll"
-        self.hitpoints = 300
-        self.speed = 180
-        self.xp = 60
-        self.attacks = {
-            "Slam": 80,
-        }
-
-    def respawn(self):
-        print("You have defeated the Elder Troll!")
-        self.hitpoints = 300
-
-
-#game items
-Weapons = [
-    {"name": "Starter Sword", "damage": 15},
-    {"name": "Wooden Sword", "damage": 25},
-    {"name": "Iron Sword", "damage": 40},
-    {"name": "Starter Dagger", "damage": 10},
-    {"name": "Stone Dagger", "damage": 15},
-    {"name": "Short Sword", "damage": 25},
-    {"name": "Starter Club", "damage": 30},
-    {"name": "Spiked Club", "damage": 40},
-    {"name": "Iron Axe", "damage": 60}
+TILE_SIZE = 40
+# Map layout: 1 is Wall, 0 is Floor
+COMPLEX_MAP = [
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1,1,0,1],
+    [1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1],
+    [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,1],
+    [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+    [1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,1,1,0,1],
+    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
+    [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 
-Armor = [
-    {"name": "Leather Armor", "health": 10},
-    {"name": "Chainmail Armor", "health": 10, "speed": 20},
-    {"name": "Iron Armor", "health": 20, "speed": -20}
-]
-#start game
-racepicker = input("what race do you want to be?\n1. Human\n2. Goblin\n3. Ogre\n").lower().strip()
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        self.image.fill((50, 50, 50))
+        self.rect = self.image.get_rect(topleft=(x, y))
 
-#player
-class Player():
-    def __init__(self, race):
-        self.race = race
-        self.inventory = []
+# Setup Groups
+all_sprites = pygame.sprite.Group()
+walls = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
 
-        if race in ("human", "1"):
-            self.hitpoints = 100
-            self.maxhp = 100
-            self.speed = 250
-            self.inventory.append("Starter Sword")
+# Build Map
+for r, row in enumerate(COMPLEX_MAP):
+    for c, tile in enumerate(row):
+        if tile == 1:
+            w = Wall(c*TILE_SIZE, r*TILE_SIZE)
+            walls.add(w)
+            all_sprites.add(w)
 
-        elif race in ("goblin", "2"):
-            self.hitpoints = 80
-            self.maxhp = 80
-            self.speed = 300
-            self.inventory.append("Starter Dagger")
+player = Player("Human", 50, 50)
+zombie = Zombie(400, 280)
+all_sprites.add(player, zombie)
+enemies.add(zombie)
 
-        elif race in ("ogre", "3"):
-            self.hitpoints = 120
-            self.maxhp = 120
-            self.speed = 200
-            self.inventory.append("Starter Club")
+while True:
+    screen.fill((30, 30, 30))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit(); sys.exit()
+        
+        # Attack with Space
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            hit = pygame.sprite.spritecollideany(player, enemies)
+            if hit:
+                player.attack(hit)
+                if hit.hitpoints > 0: player.take_damage(hit)
+                else: hit.respawn()
 
-    def take_damage(self, enemy):
-        attack = random.choice(list(enemy.attacks.keys()))
-        damage = enemy.attacks[attack]
-        self.hitpoints -= damage
-        self.hitpoints = max(0, self.hitpoints)
+    # MOVEMENT FIX: Simplified key detection
+    keys = pygame.key.get_pressed()
+    dx, dy = 0, 0
+    if keys[pygame.K_LEFT]:  dx = -1
+    if keys[pygame.K_RIGHT]: dx = 1
+    if keys[pygame.K_UP]:    dy = -1
+    if keys[pygame.K_DOWN]:  dy = 1
+    
+    player.move(dx, dy, walls)
 
-        print(f"{enemy.name} used {attack} for {damage} damage!")
-
-    def attack(self, enemy):
-        for item in self.inventory:
-            for weapon in Weapons:
-                if weapon["name"] == item:
-                    damage = weapon["damage"]
-                    enemy.hitpoints -= damage
-                    enemy.hitpoints = max(0, enemy.hitpoints)
-
-                    print(f"John used {item} for {damage} damage!")
-                    print(f"{enemy.name} HP: {enemy.hitpoints}")
-
-                    if enemy.hitpoints == 0:
-                        enemy.respawn()
-                    return
-
-    def show_hp(self):
-        print(f"You have {self.hitpoints} HP")
-
-
-#running game
-
-
-"""battle test"""
-# skeleton = Skeleton()
-# john = Player(racepicker)
-
-# print("John HP:", john.hitpoints)
-# john.take_damage(skeleton)
-# john.show_hp()
-# john.attack(skeleton)
+    all_sprites.draw(screen)
+    
+    # UI Health Bars
+    pygame.draw.rect(screen, (255,0,0), (player.rect.x, player.rect.y-10, 40, 5))
+    pygame.draw.rect(screen, (0,255,0), (player.rect.x, player.rect.y-10, 40*(player.hitpoints/player.max_hp), 5))
+    
+    pygame.display.flip()
+    clock.tick(60)
