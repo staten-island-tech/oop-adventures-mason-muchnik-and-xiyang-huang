@@ -1,178 +1,179 @@
 import random
 
-#game enemies
-class Skeleton():
-    def __init__(self):
-        self.name = "Skeleton"
-        self.hitpoints = 10
-        self.speed = 180
-        self.xp = 5
-        self.attacks = {
-            "Punch": 5,
-            "Bone Throw": 10
-        }
+#enmies
+class Enemy:
+    def __init__(self, name, hp, speed, xp, attacks):
+        self.name = name
+        self.maxhp = hp
+        self.hitpoints = hp
+        self.speed = speed
+        self.xp = xp
+        self.attacks = attacks
 
     def respawn(self):
-        print("You have defeated the Skeleton!")
-        self.hitpoints = 10
+        print(f"You have defeated the {self.name}!")
+        self.hitpoints = self.maxhp
 
 
-class Zombie():
-    def __init__(self):
-        self.name = "Zombie"
-        self.hitpoints = 30
-        self.speed = 160
-        self.xp = 5
-        self.attacks = {
-            "Punch": 10,
-            "Bite": 10
-        }
+Skeleton = Enemy(
+    "Skeleton", 10, 180, 5,
+    {"Punch": 5, "Bone Throw": 10}
+)
 
-    def respawn(self):
-        print("You have defeated the Zombie!")
-        self.hitpoints = 30
+Zombie = Enemy(
+    "Zombie", 30, 160, 5,
+    {"Punch": 10, "Bite": 10}
+)
 
+Wolf = Enemy(
+    "Wolves", 25, 300, 10,
+    {"Bite": 15}
+)
 
-class Wolves():
-    def __init__(self):
-        self.name = "Wolves"
-        self.hitpoints = 25
-        self.speed = 300
-        self.xp = 10
-        self.attacks = {
-            "Bite": 15,
-        }
+BabyTroll = Enemy(
+    "Baby Troll", 50, 160, 20,
+    {"Punch": 30}
+)
 
-    def respawn(self):
-        print("You have defeated the Wolves!")
-        self.hitpoints = 25
+Troll = Enemy(
+    "Troll", 150, 160, 40,
+    {"Slam": 50}
+)
 
+ElderTroll = Enemy(
+    "Elder Troll", 300, 180, 60,
+    {"Slam": 80}
+)
 
-class BabyTroll():
-    def __init__(self):
-        self.name = "Baby Troll"
-        self.hitpoints = 50
-        self.speed = 160
-        self.xp = 20
-        self.attacks = {
-            "Punch": 30,
-        }
+enemies = [Skeleton, Zombie, Wolf, BabyTroll, Troll, ElderTroll]
 
-    def respawn(self):
-        print("You have defeated the Baby Troll!")
-        self.hitpoints = 50
+#itemsf
 
-
-class Troll():
-    def __init__(self):
-        self.name = "Troll"
-        self.hitpoints = 150
-        self.speed = 160
-        self.xp = 40
-        self.attacks = {
-            "Slam": 50,
-        }
-
-    def respawn(self):
-        print("You have defeated the Troll!")
-        self.hitpoints = 150
-
-
-class ElderTroll():
-    def __init__(self):
-        self.name = "Elder Troll"
-        self.hitpoints = 300
-        self.speed = 180
-        self.xp = 60
-        self.attacks = {
-            "Slam": 80,
-        }
-
-    def respawn(self):
-        print("You have defeated the Elder Troll!")
-        self.hitpoints = 300
-
-
-#game items
-Weapons = [
-    {"name": "Starter Sword", "damage": 15},
-    {"name": "Wooden Sword", "damage": 25},
-    {"name": "Iron Sword", "damage": 40},
-    {"name": "Starter Dagger", "damage": 10},
-    {"name": "Stone Dagger", "damage": 15},
-    {"name": "Short Sword", "damage": 25},
-    {"name": "Starter Club", "damage": 30},
-    {"name": "Spiked Club", "damage": 40},
-    {"name": "Iron Axe", "damage": 60}
-]
-
+Weapons = {
+    "Starter Sword": 15,
+    "Wooden Sword": 25,
+    "Iron Sword": 40,
+    "Starter Dagger": 10,
+    "Stone Dagger": 15,
+    "Short Sword": 25,
+    "Starter Club": 30,
+    "Spiked Club": 40,
+    "Iron Axe": 60
+}
 Armor = [
     {"name": "Leather Armor", "health": 10},
     {"name": "Chainmail Armor", "health": 10, "speed": 20},
     {"name": "Iron Armor", "health": 20, "speed": -20}
 ]
-#start game
-racepicker = input("what race do you want to be?\n1. Human\n2. Goblin\n3. Ogre\n").lower().strip()
+#playere
 
-#player
-class Player():
+class Player:
     def __init__(self, race):
-        self.race = race
         self.inventory = []
+        self.level = 1
+        self.experience = 0
+        self.kills = 0
 
         if race in ("human", "1"):
-            self.hitpoints = 100
+            self.race = "Human"
             self.maxhp = 100
             self.speed = 250
             self.inventory.append("Starter Sword")
 
         elif race in ("goblin", "2"):
-            self.hitpoints = 80
+            self.race = "Goblin"
             self.maxhp = 80
             self.speed = 300
             self.inventory.append("Starter Dagger")
 
         elif race in ("ogre", "3"):
-            self.hitpoints = 120
+            self.race = "Ogre"
             self.maxhp = 120
             self.speed = 200
             self.inventory.append("Starter Club")
 
-    def take_damage(self, enemy):
-        attack = random.choice(list(enemy.attacks.keys()))
-        damage = enemy.attacks[attack]
-        self.hitpoints -= damage
-        self.hitpoints = max(0, self.hitpoints)
+        else:
+            raise ValueError("Invalid race")
 
+        self.hitpoints = self.maxhp
+
+    def take_damage(self, enemy):
+        attack = random.choice(list(enemy.attacks))
+        damage = enemy.attacks[attack]
+        self.hitpoints = max(0, self.hitpoints - damage)
         print(f"{enemy.name} used {attack} for {damage} damage!")
 
     def attack(self, enemy):
-        for item in self.inventory:
-            for weapon in Weapons:
-                if weapon["name"] == item:
-                    damage = weapon["damage"]
-                    enemy.hitpoints -= damage
-                    enemy.hitpoints = max(0, enemy.hitpoints)
+        weapon_name = self.inventory[0]
+        damage = Weapons[weapon_name]
 
-                    print(f"John used {item} for {damage} damage!")
-                    print(f"{enemy.name} HP: {enemy.hitpoints}")
+        enemy.hitpoints = max(0, enemy.hitpoints - damage)
+        print(f"You used {weapon_name} for {damage} damage!")
+        print(f"{enemy.name} HP: {enemy.hitpoints}")
 
-                    if enemy.hitpoints == 0:
-                        enemy.respawn()
-                    return
+        if enemy.hitpoints == 0:
+            enemy.respawn()
+            self.kills += 1
+            self.experience += enemy.xp
+            self.check_level_up()
 
-    def show_hp(self):
-        print(f"You have {self.hitpoints} HP")
+    def check_level_up(self):
+        while self.experience >= 100:
+            self.experience -= 100
+            self.level += 1
+            self.maxhp += 10
+            self.hitpoints = self.maxhp
+            print("you have leveled up")
 
+    def show_stats(self):
+        print(f"\nRace: {self.race}")
+        print(f"HP: {self.hitpoints}/{self.maxhp}")
+        print(f"Level: {self.level}")
+        print(f"XP: {self.experience}")
+        print(f"Kills: {self.kills}")
 
-#running game
+    def flee(self):
+        print("you have fled from the battle!")
+        print("What a wuss!")
+        
+#encoutners
 
+class Encounter:
+    def play(self, player):
+        enemy = random.choice(enemies)
+        print(f"\nA {enemy.name} appears!")
 
-"""battle test"""
-# skeleton = Skeleton()
-# john = Player(racepicker)
+        while enemy.hitpoints > 0 and player.hitpoints > 0:
+            player.take_damage(enemy)
+            turn = input(f"what do you want to do?\n1. flee\n2. attack").lower().strip()
+            if turn in ("1", "flee"):
+                player.flee()
+                enemy.hitpoints == 0
 
-# print("John HP:", john.hitpoints)
-# john.take_damage(skeleton)
-# john.show_hp()
-# john.attack(skeleton)
+            elif turn == ("2", "attack"):
+                player.attack(enemy)
+
+        if player.hitpoints == 0:
+            print("You have died.")
+            return False
+
+        return True
+
+#starts game
+
+racepicker = input(
+    "choose your race player!\n"
+    "1. Human\n"
+    "2. Goblin\n"
+    "3. Ogre\n"
+).lower().strip()
+
+player = Player(racepicker)
+encounter = Encounter()
+
+print("\nWelcome to super cool xiyangs game!")
+
+alive = True
+while alive:
+    alive = encounter.play(player)
+    player.show_stats()
