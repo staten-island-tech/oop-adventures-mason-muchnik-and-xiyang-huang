@@ -16,36 +16,62 @@ class Enemy:
 
 
 Skeleton = Enemy(
-    "Skeleton", 10, 180, 5,
+    "Skeleton", 10, 180, 20,
     {"Punch": 5, "Bone Throw": 10}
 )
 
 Zombie = Enemy(
-    "Zombie", 30, 160, 5,
+    "Zombie", 30, 160, 20,
     {"Punch": 10, "Bite": 10}
 )
 
 Wolf = Enemy(
-    "Wolf", 25, 300, 10,
+    "Wolf", 25, 300, 20,
     {"Bite": 15}
 )
 
 BabyTroll = Enemy(
-    "Baby Troll", 50, 160, 20,
+    "Baby Troll", 50, 160, 60,
     {"Punch": 30}
 )
 
 Troll = Enemy(
-    "Troll", 150, 160, 40,
+    "Troll", 150, 160, 80,
     {"Slam": 50}
 )
 
 ElderTroll = Enemy(
-    "Elder Troll", 300, 180, 60,
+    "Elder Troll", 300, 180, 100,
     {"Slam": 80}
 )
+DemonLord = Enemy(
+    "Demon Lord", 500, 220, 150,
+    {"Hell Slash": 70, "Inferno": 120}
+)
 
-enemies = [Skeleton, Zombie, Wolf, BabyTroll, Troll, ElderTroll]
+VoidReaper = Enemy(
+    "Void Reaper", 650, 240, 200,
+    {"Void Cleave": 90, "Soul Rip": 140}
+)
+
+AncientDragon = Enemy(
+    "Ancient Dragon", 900, 200, 300,
+    {"Fire Breath": 160, "Tail Smash": 120, "Claw Rend": 100}
+)
+
+ElderLich = Enemy(
+    "Elder Lich", 550, 260, 250,
+    {"Death Bolt": 110, "Life Drain": 140}
+)
+
+TitanOfOblivion = Enemy(
+    "Titan of Oblivion", 1200, 180, 400,
+    {"World Crusher": 200, "Seismic Slam": 160}
+)
+
+starterenemies = [Skeleton, Zombie, Wolf]
+midenemies = [BabyTroll, Troll, ElderTroll]
+endenemies = [DemonLord, VoidReaper, AncientDragon, ElderLich, TitanOfOblivion]
 
 #itemsf
 
@@ -70,7 +96,7 @@ Armor = [
 class Player:
     def __init__(self, race):
         self.inventory = []
-        self.level = 1
+        self.level = 0
         self.experience = 0
         self.kills = 0
 
@@ -116,10 +142,10 @@ class Player:
         print(f"{enemy.name} current HP: {enemy.hitpoints}")
 
         if enemy.hitpoints <= 0:
-            enemy.respawn()
             self.kills += 1
             self.experience += enemy.xp
             self.check_level_up()
+            print("you have defeated the enemy!")
 
     def check_level_up(self):
         while self.experience >= 100:
@@ -144,53 +170,59 @@ class Player:
 
 class Encounter:
     def play(self, player):
-        enemy = random.choice(enemies)
+        alive = True
+        while alive == True:
+            if player.level < 10:
+                enemy = random.choice(starterenemies)
 
-        if enemy == Skeleton:
-            print("you've wandered into a graveyard... what in the shit is that???!?!?!")
-        elif enemy == Zombie:
-            print("nights quickly approaching and you see a cave you could rest in.")
-            print("you hear groans from behind you...")
-        elif enemy == Wolf:
-            print("you walk into a forest.")
-            print("ur exhausted and rest against a large tree")
-            print("you hear a branch snap near you...")
-        elif enemy == BabyTroll:
-            print("phew! you survived that last thing...")
-            print("nights approaching and you see a cave you could rest in.")
-            print("you hear a slight tremor deeper in the cave...")
-        elif enemy == Troll:
-            print("you stumble into a unusual forest with monstrous trees.")
-            print("ur exhausted and rest against a large rock")
-            print("an apple suddenly drops on ur head... then more start dropping form the tree")
-            print("you feel the ground shake...")
-        elif enemy == ElderTroll:
-            print("you stumble into a unusual forest with monstrous trees.")
-            print("ur exhausted and rest against a large rock")
-            print("suddenly a huge shadow appears from above you")
+            elif player.level >= 10 and player.level < 20:
+                enemy = random.choice(midenemies)
 
-        print(f"\nA {enemy.name} appears!")
 
-        while enemy.hitpoints > 0 and player.hitpoints > 0:
-            player.take_damage(enemy)
+            if enemy.name == Skeleton:
+                print("\nyou've wandered into a graveyard... what in the shit is that???!?!?!")
+            elif enemy.name == Zombie:
+                print("\nnights quickly approaching and you see a cave you could rest in.")
+                print("you hear groans from behind you...")
+            elif enemy.name == Wolf:
+                print("\nyou walk into a forest.")
+                print("ur exhausted and rest against a large tree")
+                print("you hear a branch snap near you...")
+            elif enemy.name == BabyTroll:
+                print("\nphew! you survived that last thing...")
+                print("nights approaching and you see a cave you could rest in.")
+                print("you hear a slight tremor deeper in the cave...")
+            elif enemy.name == Troll:
+                print("\nyou stumble into a unusual forest with monstrous trees.")
+                print("ur exhausted and rest against a large rock")
+                print("an apple suddenly drops on ur head... then more start dropping form the tree")
+                print("you feel the ground shake...")
+            elif enemy.name == ElderTroll:
+                print("\nyou stumble into a unusual forest with monstrous trees.")
+                print("ur exhausted and rest against a large rock")
+                print("suddenly a huge shadow appears from above you")
 
-            if player.hitpoints <= 0:
-                break
-            elif enemy.hitpoints <= 0:
-                break
+            if enemy.hitpoints > 0:
+                print(f"\nA {enemy.name} appears!")
 
-            turn = input("what do you want do to?\n1. flee |2. attack |:").lower().strip()
-
-            if turn in ("1", "flee") and player.speed > enemy.speed:
-                player.flee()
-                return True
-
-            elif turn in ("2", "attack"):
-                player.attack(enemy)
-
-            else:
-                print("you failed to flee slow fart!")
+            while player.hitpoints > 0 and enemy.hitpoints > 0:
                 player.take_damage(enemy)
+
+                if player.hitpoints <= 0:
+                    alive = False
+                    break
+
+                turn = input("what do you want do to?\n1. flee |2. attack |:").lower().strip()
+
+                if turn in ("1", "flee") and player.speed > enemy.speed:
+                    player.flee()
+
+                elif turn in ("2", "attack"):
+                    player.attack(enemy)
+
+                else:
+                    print("you failed to flee slow fart!")
+                    player.take_damage(enemy)
 
 
 #starts game
@@ -231,4 +263,4 @@ input("\nPress Enter to begin your journey...")
 alive = True
 while alive:
     alive = encounter.play(player)
-    player.show_stats()
+    # player.show_stats()
