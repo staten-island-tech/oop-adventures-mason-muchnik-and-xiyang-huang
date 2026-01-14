@@ -1,5 +1,5 @@
-from Player import *
-from enemies import *
+from entities.Player import *
+from entities.enemies import *
 from items.armour import *
 #__________________________________________________________________________________________________________________________________
 
