@@ -73,7 +73,7 @@ starterenemies = [Skeleton, Zombie, Wolf]
 midenemies = [BabyTroll, Troll, ElderTroll]
 endenemies = [DemonLord, VoidReaper, AncientDragon, ElderLich, TitanOfOblivion]
 
-#itemsf
+#items
 
 Weapons = {
     "Starter Sword": 15,
@@ -239,4 +239,3 @@ input("\nPress Enter to begin your journey...")
 alive = True
 while alive:
     alive = encounter.play(player)
-    # player.show_stats()
