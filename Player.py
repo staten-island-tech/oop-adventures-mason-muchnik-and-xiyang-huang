@@ -1,81 +1,75 @@
 import random
-
-class Player():
+from items.weapons import *
+class Player:
     def __init__(self, race):
-        self.race = race
         self.inventory = []
+        self.level = 0
+        self.experience = 0
+        self.kills = 0
 
-        if race == "Human":
-            self.hitpoints = 100
+        if race in ("human", "1"):
+            self.race = "Human"
             self.maxhp = 100
-            self.speed = 250
+            self.speed = 200
             self.inventory.append("Starter Sword")
-            
-        elif race == "Goblin":
-            self.hitpoints = 80
+
+        elif race in ("goblin", "2"):
+            self.race = "Goblin"
             self.maxhp = 80
-            self.speed = 300
+            self.speed = 250
             self.inventory.append("Starter Dagger")
 
-        elif race == "Ogre":
-            self.hitpoints = 120
+        elif race in ("ogre", "3"):
+            self.race = "Ogre"
             self.maxhp = 120
-            self.speed = 200
+            self.speed = 150
             self.inventory.append("Starter Club")
 
+        else:
+            raise ValueError("Invalid race")
+
+        self.hitpoints = self.maxhp
+
     def take_damage(self, enemy):
-        attack = random.choice(list(enemy.attacks.keys()))
+        attack = random.choice(list(enemy.attacks))
         damage = enemy.attacks[attack]
-        self.hitpoints -= damage
-        print(f"Skeleton used {attack} for {damage} damage!")
-        return self.hitpoints
-    
+        self.hitpoints = max(0, self.hitpoints - damage)
+        print(f"{enemy.name} used {attack} for {damage} damage!")
+        if self.hitpoints <= 0:
+            print("yuo died")
+        elif self.hitpoints > 0:
+            print(f"you have {self.hitpoints} hp left")
+
     def attack(self, enemy):
-        for item in self.inventory:
-            for weapon in Weapons:
-                if weapon["name"] == item:
-                    damage = weapon["damage"]
-                    enemy.hitpoints -= damage
-                    print(f"{self.race} used {item} for {damage} damage!")
-                    return
-                
-    def show_hp(self):
-        print(f"you have {self.hitpoints} HP")
+        weapon_name = self.inventory[0]
+        damage = Weapons[weapon_name]
 
+        enemy.hitpoints = max(0, enemy.hitpoints - damage)
+        print(f"\nYou used {weapon_name} for {damage} damage!")
+        print(f"{enemy.name} current HP: {enemy.hitpoints}")
 
-class Skeleton():
-    def __init__(self):
-        self.hitpoints = 10
-        self.speed = 180
-        self.xp = 5
-        self.attacks = {
-            "Punch": 5,
-            "Bone Throw": 10
-        }
+        if enemy.hitpoints <= 0:
+            self.kills += 1
+            self.experience += enemy.xp
+            self.check_level_up()
+            print("you have defeated the enemy!")
 
-    def respawn(self):
-        print(f"you have defeated skeleton")
-        self.hitpoints = 10
+    def check_level_up(self):
+        while self.experience >= 100:
+            self.experience -= 100
+            self.level += 1
+            self.maxhp += 10
+            self.hitpoints = self.maxhp
+            print("you have leveled up")
 
+    def show_stats(self):
+        print(f"\nRace: {self.race}")
+        print(f"HP: {self.hitpoints}/{self.maxhp}")
+        print(f"Level: {self.level}")
+        print(f"XP: {self.experience}")
+        print(f"Kills: {self.kills}")
 
-Weapons = [
-    {"name": "Starter Sword", "damage": 15},
-    {"name": "Wooden Sword", "damage": 25},
-    {"name": "Iron Sword", "damage": 40},
-    {"name": "Starter Dagger", "damage": 10},
-    {"name": "Stone Dagger", "damage": 15},
-    {"name": "Short Sword", "damage": 25},
-    {"name": "Starter Club", "damage": 30},
-    {"name": "Spiked Club", "damage": 40},
-    {"name": "Iron Axe", "damage": 60}
-]
-
-skeleton = Skeleton()
-john = Player("Human")
-
-print("John HP:", john.hitpoints)
-john.take_damage(skeleton)
-john.show_hp()
-john.attack(skeleton)
-print(f"skeleton hp: {skeleton.hitpoints}")
-skeleton.respawn()
+    def flee(self):
+        print("you have fled from the battle!")
+        print("What a wuss!")
+        
