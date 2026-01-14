@@ -178,30 +178,6 @@ class Encounter:
             elif player.level >= 10 and player.level < 20:
                 enemy = random.choice(midenemies)
 
-
-            if enemy.name == Skeleton:
-                print("\nyou've wandered into a graveyard... what in the shit is that???!?!?!")
-            elif enemy.name == Zombie:
-                print("\nnights quickly approaching and you see a cave you could rest in.")
-                print("you hear groans from behind you...")
-            elif enemy.name == Wolf:
-                print("\nyou walk into a forest.")
-                print("ur exhausted and rest against a large tree")
-                print("you hear a branch snap near you...")
-            elif enemy.name == BabyTroll:
-                print("\nphew! you survived that last thing...")
-                print("nights approaching and you see a cave you could rest in.")
-                print("you hear a slight tremor deeper in the cave...")
-            elif enemy.name == Troll:
-                print("\nyou stumble into a unusual forest with monstrous trees.")
-                print("ur exhausted and rest against a large rock")
-                print("an apple suddenly drops on ur head... then more start dropping form the tree")
-                print("you feel the ground shake...")
-            elif enemy.name == ElderTroll:
-                print("\nyou stumble into a unusual forest with monstrous trees.")
-                print("ur exhausted and rest against a large rock")
-                print("suddenly a huge shadow appears from above you")
-
             if enemy.hitpoints > 0:
                 print(f"\nA {enemy.name} appears!")
 
