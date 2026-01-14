@@ -95,7 +95,7 @@ Armor = [
 
 class Player:
     def __init__(self, race):
-        self.inventory = ["Heal Potion"]
+        self.inventory = ["Heal Potion", "Wooden Axe", "Wooden Pickaxe"]
         self.level = 0
         self.experience = 0
         self.kills = 0
@@ -229,6 +229,16 @@ class Encounter:
                             print("you have used heal potion and gained 40 hp")
                             player.hitpoints += 40
                             print(f"your hp is now {player.hitpoints}")
+                    
+                    elif "Apple" in player.inventory:
+                        print("u have an apple")
+                        use = input(f"\n1. use |2. close inventory |:").lower().strip()
+                            if use in ("1", "use"):
+                                print("you have ate an apple and gained 10 hp")
+                                player.hitpoints += 10
+                                print(f"your hp is now {player.hitpoints}")
+                    
+
 
                 elif turn in ("1", "flee") and player.speed <= enemy.speed:
                     print("you failed to flee slow fart!")
@@ -237,8 +247,14 @@ class Encounter:
     def inbetween():
         print("phew! you survived the last battle")
         e = random.choice(1,3)
+        #make an encounter of 1 2 or 3
+        #make it somethibg different
         if e == 1:
-            print("u have ")
+            print("you have found a tree")
+            chop = input("\n1. chop |2. leave |:").lower().strip()
+            if chop in ("1", "chop"):
+                print("u have chopped the tree down. you have obtained 2 wood and 3 apples")
+                player.inventory.append("Wood", "Wood", "Apple", "Apple", "Apple")
 
 #starts game
 LORE = """
