@@ -95,7 +95,7 @@ Armor = [
 
 class Player:
     def __init__(self, race):
-        self.inventory = []
+        self.inventory = ["Heal Potion"]
         self.level = 0
         self.experience = 0
         self.kills = 0
@@ -171,33 +171,32 @@ class Player:
 class Encounter:
     def play(self, player):
         alive = True
-        while alive == True:
+        if alive == True:
             if player.level < 10:
                 enemy = random.choice(starterenemies)
 
             elif player.level >= 10 and player.level < 20:
                 enemy = random.choice(midenemies)
 
-
-            if enemy.name == Skeleton:
-                print("\nyou've wandered into a graveyard... what in the shit is that???!?!?!")
-            elif enemy.name == Zombie:
+            if enemy == Skeleton:
+                print("\nyou've wandered into a graveyard... what in the shit is that?!")
+            elif enemy == Zombie:
                 print("\nnights quickly approaching and you see a cave you could rest in.")
                 print("you hear groans from behind you...")
-            elif enemy.name == Wolf:
+            elif enemy == Wolf:
                 print("\nyou walk into a forest.")
                 print("ur exhausted and rest against a large tree")
                 print("you hear a branch snap near you...")
-            elif enemy.name == BabyTroll:
+            elif enemy == BabyTroll:
                 print("\nphew! you survived that last thing...")
                 print("nights approaching and you see a cave you could rest in.")
                 print("you hear a slight tremor deeper in the cave...")
-            elif enemy.name == Troll:
+            elif enemy == Troll:
                 print("\nyou stumble into a unusual forest with monstrous trees.")
                 print("ur exhausted and rest against a large rock")
                 print("an apple suddenly drops on ur head... then more start dropping form the tree")
                 print("you feel the ground shake...")
-            elif enemy.name == ElderTroll:
+            elif enemy == ElderTroll:
                 print("\nyou stumble into a unusual forest with monstrous trees.")
                 print("ur exhausted and rest against a large rock")
                 print("suddenly a huge shadow appears from above you")
@@ -212,7 +211,7 @@ class Encounter:
                     alive = False
                     break
 
-                turn = input("what do you want do to?\n1. flee |2. attack |:").lower().strip()
+                turn = input("what do you want do to?\n1. flee |2. attack |3. open inventory |:").lower().strip()
 
                 if turn in ("1", "flee") and player.speed > enemy.speed:
                     player.flee()
@@ -220,10 +219,26 @@ class Encounter:
                 elif turn in ("2", "attack"):
                     player.attack(enemy)
 
-                else:
+                elif turn in ("3", "open inventory"):
+                    print("\nin ur inventory u have:")
+                    print(player.inventory)
+                    if "Heal Potion" in player.inventory:
+                        print(f"you have a heal potion.")
+                        use = input(f"\n1. use |2. close inventory |:").lower().strip()
+                        if use in ("1", "use"):
+                            print("you have used heal potion and gained 40 hp")
+                            player.hitpoints += 40
+                            print(f"your hp is now {player.hitpoints}")
+
+                elif turn in ("1", "flee") and player.speed <= enemy.speed:
                     print("you failed to flee slow fart!")
                     player.take_damage(enemy)
 
+    def inbetween():
+        print("phew! you survived the last battle")
+        e = random.choice(1,3)
+        if e == 1:
+            print("u have ")
 
 #starts game
 LORE = """
