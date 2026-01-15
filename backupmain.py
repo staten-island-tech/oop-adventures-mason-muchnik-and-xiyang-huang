@@ -1,3 +1,8 @@
+# let it be known that Xiyang sucks at writing code that is clear and organized for others. Therefore this file was created to unsure that I, Mason Muchnik
+#In the case that I screw things up there are back ups for me to jsut copy and paste.
+
+
+
 from Player import *
 
 
@@ -80,7 +85,7 @@ class Encounter:
                     player.take_damage(enemy)
 
     def inbetween(self):
-        print("\n phew! you survived the battle")
+        print("\nphew! you survived the battle")
         e = random.randint(1,3)
 
         if e == 1:
