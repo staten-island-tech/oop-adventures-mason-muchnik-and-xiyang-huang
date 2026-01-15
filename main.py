@@ -12,7 +12,7 @@ class Encounter:
                 enemy = random.choice(midenemies)
 
             if enemy == Skeleton:
-                print("\nyou've wandered into a graveyard... what in the shit is that?!")
+                print("\nyou've wandered into a graveyard... what?!?1?!")
             elif enemy == Zombie:
                 print("\nnights quickly approaching and you see a cave you could rest in.")
                 print("you hear groans from behind you...")
@@ -55,7 +55,7 @@ class Encounter:
                     player.attack(enemy)
 
                 elif turn in ("3", "open inventory"):
-                    print("\n in ur inventory u have:")
+                    print("\nin ur inventory u have:")
                     print(player.inventory)
                     if "Heal Potion" in player.inventory:
                         print(f"you have a heal potion.")
@@ -80,7 +80,7 @@ class Encounter:
                     player.take_damage(enemy)
 
     def inbetween(self):
-        print("\n phew! you survived the battle")
+        print("\nphew! you survived the battle")
         e = random.randint(1,3)
 
         if e == 1:
